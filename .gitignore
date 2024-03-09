@@ -219,10 +219,14 @@ fabric.properties
 modules.xml
 .idea/misc.xml
 
+### properties ###
+*.yml
+application.yml
+application.properties
+
 ### Java ###
 # Compiled class file
 *.class
-/backend/src/main/resources/application.properties
 /frontend/package-lock.json
 # Log file
 *.log
