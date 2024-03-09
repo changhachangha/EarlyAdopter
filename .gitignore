@@ -339,3 +339,4 @@ $RECYCLE.BIN/
 /backend/.gradle/8.5/fileChanges/last-build.bin
 /backend/.gradle/8.5/checksums/md5-checksums.bin
 /backend/.gradle/8.5/checksums/sha1-checksums.bin
+/frontend/package-lock.josn
