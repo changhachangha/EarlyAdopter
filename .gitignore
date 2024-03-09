@@ -222,7 +222,8 @@ modules.xml
 ### Java ###
 # Compiled class file
 *.class
-
+/backend/src/main/resources/application.properties
+/frontend/package-lock.json
 # Log file
 *.log
 
