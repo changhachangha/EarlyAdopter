@@ -219,10 +219,15 @@ fabric.properties
 modules.xml
 .idea/misc.xml
 
+### properties ###
+*.yml
+application.yml
+application.properties
+/backend/src/main/resources.*
+
 ### Java ###
 # Compiled class file
 *.class
-/backend/src/main/resources/application.properties
 /frontend/package-lock.json
 # Log file
 *.log
@@ -340,3 +345,4 @@ $RECYCLE.BIN/
 /backend/.gradle/8.5/checksums/md5-checksums.bin
 /backend/.gradle/8.5/checksums/sha1-checksums.bin
 frontend/package-lock.json
+
