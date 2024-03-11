@@ -4,9 +4,10 @@ export default defineNuxtConfig({
     enabled: true,
 
     timeline: {
-      enabled: true
-    }
+      enabled: true,
+    },
   },
+  pages: true,
 
-  modules: ["@pinia/nuxt"]
-})
+  modules: ['@pinia/nuxt'],
+});
