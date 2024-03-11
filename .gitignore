@@ -346,3 +346,5 @@ $RECYCLE.BIN/
 /backend/.gradle/8.5/checksums/sha1-checksums.bin
 frontend/package-lock.json
 
+/backend/.gradle/*
+/backend/build/*
