@@ -1,15 +1,7 @@
-<script setup lang="ts">
-import { useRoute } from 'vue-router';
-
-const route = useRoute();
-</script>
-
 <template>
-  <div>
-    <h1>Nuxt Routing set up successfully!</h1>
-    <p>Current route: {{ route.path }}</p>
-    <a href="https://nuxt.com/docs/getting-started/routing" target="_blank"
-      >Learn more about Nuxt Routing</a
-    >
-  </div>
+  <div>여기가 index 페이지입니다.</div>
+  <v-btn>버튼</v-btn>
 </template>
+<script setup lang="ts">
+</script>
+<style scoped></style>

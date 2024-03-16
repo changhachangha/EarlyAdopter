@@ -1,0 +1,4 @@
+### crawlingRequest
+# @no-cookie-jar
+GET http://localhost:8080/crawling/musinsa
+Content-Type: application/json

@@ -1,0 +1,6 @@
+/*settings.scss*/
+
+@use 'vuetify/settings' with (
+  $button-color: purple,
+  $button-font-weight: 700
+);

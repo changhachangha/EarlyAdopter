@@ -1,13 +1,46 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: {
-    enabled: true,
-
-    timeline: {
-      enabled: true,
+  ssr: true,
+  devtools: { enabled: true },
+  css: [],
+  modules: [
+    'vuetify-nuxt-module',
+    [
+      '@pinia/nuxt',
+      {
+        autoImports: ['defineStore', 'acceptHMRUpdate'],
+      },
+    ],
+  ], //설정
+  vite: {
+    define: {
+      'process.env.DEBUG': false,
     },
   },
-  pages: true,
-
-  modules: ['@pinia/nuxt'],
+  vuetify: {
+    //설정
+    moduleOptions: {
+      /* module specific options */
+      styles: { configFile: '/settings.scss' },
+    },
+    vuetifyOptions: {
+      /* vuetify options */
+    },
+  },
+  features: {
+    //설정
+    inlineStyles: false,
+  },
+  vue: {
+    runtimeCompiler: true,
+  },
+  sourcemap: {
+    server: false,
+    client: false,
+  },
+  build: {
+    transpile: ['vuetify'],
+  },
+  imports: {
+    dirs: ['/stores'],
+  },
 });

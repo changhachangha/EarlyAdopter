@@ -331,20 +331,7 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,intellij+iml,intellij+all,vue,vuejs,macos,windows
 /.idea/
-/backend/.gradle/buildOutputCleanup/buildOutputCleanup.lock
-/backend/.gradle/buildOutputCleanup/cache.properties
-/backend/.gradle/8.5/checksums/checksums.lock
-/backend/.gradle/8.5/dependencies-accessors/dependencies-accessors.lock
-/backend/.gradle/8.5/executionHistory/executionHistory.lock
-/backend/.gradle/8.5/fileHashes/fileHashes.lock
-/backend/.gradle/8.5/dependencies-accessors/gc.properties
-/backend/.gradle/8.5/gc.properties
-/backend/.gradle/vcs-1/gc.properties
 /backend/HELP.md
-/backend/.gradle/8.5/fileChanges/last-build.bin
-/backend/.gradle/8.5/checksums/md5-checksums.bin
-/backend/.gradle/8.5/checksums/sha1-checksums.bin
-frontend/package-lock.json
-
-/backend/.gradle/*
 /backend/build/*
+/backend/.gradle/*
+frontend/package-lock.json

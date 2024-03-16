@@ -35,7 +35,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	// Spring -ompileOnly
+	// Spring -compileOnly
 	compileOnly 'org.projectlombok:lombok'
 
 	// Spring -
@@ -48,6 +48,9 @@ dependencies {
 
 
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+	implementation 'org.jsoup:jsoup:1.15.3'
+	implementation 'org.seleniumhq.selenium:selenium-java:4.14.1'
 }
 
 tasks.named('test') {
