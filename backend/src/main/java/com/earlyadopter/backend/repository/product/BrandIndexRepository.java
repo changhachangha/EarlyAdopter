@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BrandIndexRepository extends ElasticsearchRepository<BRAND_INDEX, String> {
+    BRAND_INDEX findByBrandNm(String name);
 }

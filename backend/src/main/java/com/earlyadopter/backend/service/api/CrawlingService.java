@@ -70,20 +70,6 @@ public class CrawlingService {
         //1초 대기
         try {Thread.sleep(1000);} catch (InterruptedException e) {}
 
-        //버튼을 클릭했기 때문에 브라우저는 뉴스창으로 이동돼 있다.
-        //이동한 뉴스 창의 IT/과학 뉴스 헤드라인을 가져온다.
-
-        //iT/과학뉴스를 담은 div
-//        logger.info("el2 is [{}] ", el2);
-//
-//
-//        int count = 0;
-//        for (int i = 0; i < el3.size(); i++) {
-//            //뉴스의 제목을 모두 출력한다.
-//            System.out.println(++count + "번 뉴스: "+ el3.get(i).getText());
-//        }
-
-
         try {
             //드라이버가 null이 아니라면
             if(driver != null) {
