@@ -38,19 +38,19 @@ dependencies {
 	// Spring -compileOnly
 	compileOnly 'org.projectlombok:lombok'
 
-	// Spring -
+	// Spring - devtools
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	
 	// Spring - test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-
-
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
+	// Crawling
 	implementation 'org.jsoup:jsoup:1.15.3'
-	implementation 'org.seleniumhq.selenium:selenium-java:4.14.1'
+	implementation 'org.seleniumhq.selenium:selenium-java:4.18.1'
+
 }
 
 tasks.named('test') {

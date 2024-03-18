@@ -1,37 +1,28 @@
 package com.earlyadopter.backend.component.util;
 
+import com.earlyadopter.backend.service.api.CrawlingService;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.ObjectUtils;
-
-import java.time.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WebDriverUtil {
-    @Value("${driver.chrome.driver_path}")
-    private static String DRIVER_PATH;
+    private static final Logger logger = LoggerFactory.getLogger(CrawlingService.class);
+    public static WebDriver getChromeDriver(String urlPath) {
 
-    public static WebDriver getChromeDriver() {
+        logger.info("getChromeDriver method start ");
 
-        if (ObjectUtils.isEmpty(System.getProperty("webdriver.chrome.driver"))) {
-            System.setProperty("webdriver.chrome.driver", DRIVER_PATH);
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless");
+
+        logger.info("After ChromeOptions initialize and set build option ");
+        WebDriver driver = new ChromeDriver(options);
+        driver.get(urlPath);
+
+        try {Thread.sleep(1000);} catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-
-        ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("--headless");
-        chromeOptions.addArguments("--lang-ko");
-        chromeOptions.addArguments("--start-maximized");
-        chromeOptions.addArguments("--no-sandbox");
-        chromeOptions.addArguments("--disable-dev-shm-usage");
-        chromeOptions.addArguments("--disable-default-apps");
-        chromeOptions.addArguments("--disable-gpu");
-        chromeOptions.addArguments("--disable-popup-blocking");
-        chromeOptions.setCapability("ignoreProtectedModeSettings", true);
-
-        WebDriver driver = new ChromeDriver(chromeOptions);
-        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
-
         return driver;
 
     }
