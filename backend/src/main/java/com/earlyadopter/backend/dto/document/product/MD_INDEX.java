@@ -18,17 +18,17 @@ import java.util.Objects;
 @Document(indexName = "md-index")
 public class MD_INDEX {
     @Id
-    private String mdId;
-    private String mdNm;
-    private String mdNo;
+    private String mdId;            // 상품 ID
+    private String mdNm;            // 상품명
+    private String mdNo;            // 품목명
     @Field(type = FieldType.Date, format = DateFormat.epoch_millis)
-    private Date cellDate;
+    private Date cellDate;          // 출고일
     @Field(type = FieldType.Keyword)
-    private String imgLink;
-    private String category;
-    private Integer mdPrice;
-    private String brandId;
-    private String brandNm;
+    private String imgLink;         // 상품 이미지(링크)
+    private String category;        // 카테고리
+    private Integer mdPrice;        // 가격
+    private String brandId;         // 브랜드 ID
+    private String brandNm;         // 브랜드 이름
 
     @Override
     public boolean equals(Object o) {

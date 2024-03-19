@@ -21,28 +21,34 @@ public class ProductService {
 
     public Iterable<BRAND_INDEX> findAllBrand() {
 
-        logger.info("findAllBrand service method start");
+        logger.info("find all brand service method start");
         return brandIndexRepository.findAll();
     }
     public BRAND_INDEX findBrandByName(String name) {
 
-        logger.info("findBrandByName service method start");
+        logger.info("find brand by name service method start");
         return brandIndexRepository.findByBrandNm(name);
     }
 
     public Iterable<BRAND_INDEX> addNewBrand(List<BRAND_INDEX> brandIndex) {
 
-        logger.info("addNewBrand service method start");
+        logger.info("add new brand service method start");
         return brandIndexRepository.saveAll(brandIndex);
     }
 
     public Iterable<BRAND_INDEX> deleteBrand(List<BRAND_INDEX> brandIndex) {
 
-        logger.info("deleteAllBrand service method start");
+        logger.info("delete all brand service method start");
         brandIndexRepository.deleteAll(brandIndex);
 
         return brandIndexRepository.findAll();
     }
 
 
+    public void deleteAllBrand() {
+
+        logger.info("delete all brand service method start");
+        brandIndexRepository.deleteAll();
+
+    }
 }

@@ -16,10 +16,10 @@ import java.util.Objects;
 @Document(indexName = "brand-index")
 public class BRAND_INDEX {
     @Id
-    private String brandId;
-    private String brandNm;
+    private String brandId;         // 브랜드 ID
+    private String brandNm;         // 브랜드 이름
     @Field(type = FieldType.Keyword)
-    private String brandLogo;
+    private String brandLogo;       // 브랜드 로고
 
     @Override
     public boolean equals(Object o) {

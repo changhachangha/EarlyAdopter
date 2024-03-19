@@ -24,14 +24,14 @@ public class ProductController {
     @GetMapping("/all")
     public ResponseEntity<Iterable<BRAND_INDEX>> findAllBrand() {
 
-        logger.info("findAllBrand method start");
+        logger.info("find all brand method start");
         return ResponseEntity.ok(productService.findAllBrand());
     }
 
     @GetMapping("/{name}")
     public ResponseEntity<BRAND_INDEX> findBrandByName(@PathVariable String name) {
 
-        logger.info("findBrandByName method start");
+        logger.info("find brand by name method start");
         try {
 
             return ResponseEntity.ok(productService.findBrandByName(name));
@@ -47,14 +47,22 @@ public class ProductController {
     @PostMapping()
     public ResponseEntity<Iterable<BRAND_INDEX>> insertBrand(@RequestBody List<BRAND_INDEX> brandIndex) {
 
-        logger.info("insertBrand method start");
+        logger.info("insert brand method start");
         return ResponseEntity.ok(productService.addNewBrand(brandIndex));
     }
 
     @DeleteMapping()
     public ResponseEntity<Iterable<BRAND_INDEX>> deleteBrand(@RequestBody List<BRAND_INDEX> brandIndex) {
 
-        logger.info("deleteAllBrand method start");
+        logger.info("delete brand method start");
         return ResponseEntity.ok(productService.deleteBrand(brandIndex));
+    }
+
+    @PostMapping("/all")
+    public ResponseEntity<BRAND_INDEX> deleteAllBrand() {
+
+        logger.info("delete all brand method start");
+        productService.deleteAllBrand();
+        return ResponseEntity.ok().build();
     }
 }

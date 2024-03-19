@@ -1,8 +1,5 @@
 package com.earlyadopter.backend.component.config;
 
-import org.apache.http.Header;
-import org.apache.http.HttpHost;
-import org.apache.http.message.BasicHeader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -26,8 +23,6 @@ public class ElasticsearchBaseConfig extends ElasticsearchConfiguration {
 
     @Value("${elasticsearch.password}")
     private String password;
-    @Value("${elasticsearch.apiKey")
-    private String apiKey;
 
     @Override
     public ClientConfiguration clientConfiguration() {

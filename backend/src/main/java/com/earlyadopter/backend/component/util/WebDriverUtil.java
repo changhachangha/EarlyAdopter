@@ -7,6 +7,8 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
+
 public class WebDriverUtil {
     private static final Logger logger = LoggerFactory.getLogger(CrawlingService.class);
     public static WebDriver getChromeDriver(String urlPath) {
@@ -15,14 +17,15 @@ public class WebDriverUtil {
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
+        options.addArguments("--disable-gpu");
+        options.addArguments("--log-level=3");
 
         logger.info("After ChromeOptions initialize and set build option ");
         WebDriver driver = new ChromeDriver(options);
+
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10000));
         driver.get(urlPath);
 
-        try {Thread.sleep(1000);} catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         return driver;
 
     }
