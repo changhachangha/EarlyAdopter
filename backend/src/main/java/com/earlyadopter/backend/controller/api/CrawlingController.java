@@ -4,7 +4,7 @@ import com.earlyadopter.backend.dto.document.product.BRAND_INDEX;
 import com.earlyadopter.backend.service.api.CrawlingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +19,7 @@ public class CrawlingController {
         this.crawlingService = crawlingService;
     }
 
-    @GetMapping("/musinsa")
+    @PostMapping("/musinsa")
     public ResponseEntity<BRAND_INDEX> musinsaCrawling() {
 
         crawlingService.addNewCategories();

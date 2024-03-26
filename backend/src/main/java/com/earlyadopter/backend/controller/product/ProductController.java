@@ -62,7 +62,7 @@ public class ProductController {
     public ResponseEntity<BRAND_INDEX> deleteAllBrand() {
 
         logger.info("delete all brand method start");
-        productService.deleteAllBrand();
+//        productService.deleteAllBrand();
         return ResponseEntity.ok().build();
     }
 }

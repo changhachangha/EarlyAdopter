@@ -335,3 +335,4 @@ $RECYCLE.BIN/
 /backend/build/*
 /backend/.gradle/*
 frontend/package-lock.json
+/*.csv
