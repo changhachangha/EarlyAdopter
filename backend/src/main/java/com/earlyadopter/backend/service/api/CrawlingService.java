@@ -103,7 +103,7 @@ public class CrawlingService {
             if (pool.isTerminated()) break;
         }
 
-        logger.info("brandList [{}] ", brandList);
+        logger.info("brandListSize [{}] ", brandList.size());
         // brandList Elasticsearch 에 저장
         Iterable<BRAND_INDEX> brandIndexList = brandIndexRepository.saveAll(brandList);
 
@@ -151,8 +151,6 @@ public class CrawlingService {
 
             driver.navigate().to(urlPath);
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(1));
-            logger.info("parameter urlPath is [{}] ", urlPath);
-            logger.info("current driver move to [{}] ", driver.getCurrentUrl());
             Document urlDoc = Jsoup.parse(driver.getPageSource());
 
             // dt 태그를 가져온 뒤

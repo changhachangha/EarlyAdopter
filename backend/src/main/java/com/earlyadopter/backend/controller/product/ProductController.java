@@ -21,10 +21,28 @@ public class ProductController {
     @Autowired
     public ProductController(ProductService productService) { this.productService = productService; }
 
+    @GetMapping("/brand/pageNo")
+    public int getBrandPageNo() {
+
+        return productService.totalPageNumberOfBrandIndex();
+    }
+    @GetMapping("/all/{pageNo}")
+    public ResponseEntity<Iterable<BRAND_INDEX>> findAllBrandWithPageable(@PathVariable int pageNo) {
+
+        logger.info("find all brand with pageable method start");
+
+        if (pageNo > productService.totalPageNumberOfBrandIndex()) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        return ResponseEntity.ok(productService.findAllBrandWithPageable(pageNo));
+    }
+
     @GetMapping("/all")
     public ResponseEntity<Iterable<BRAND_INDEX>> findAllBrand() {
 
         logger.info("find all brand method start");
+
         return ResponseEntity.ok(productService.findAllBrand());
     }
 
