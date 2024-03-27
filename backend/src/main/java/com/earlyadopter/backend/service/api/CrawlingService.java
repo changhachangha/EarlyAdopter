@@ -8,6 +8,7 @@ import java.io.*;
 
 import java.nio.charset.StandardCharsets;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,7 +33,6 @@ public class CrawlingService {
     private static Set<String> linkSet;
     private static Set<BRAND_INDEX> brandList;
     private static Map<String, String> brandMapforDupCheckMap;
-    private static WebDriver driver;
 
     public CrawlingService(BrandIndexRepository brandIndexRepository) {
         this.brandIndexRepository = brandIndexRepository;
@@ -50,7 +50,7 @@ public class CrawlingService {
             brandMapforDupCheckMap.put(brandIndex.getBrandNm(), brandIndex.getBrandLogo());
 
         // Webdriver initialize
-        driver = WebDriverUtil.getChromeDriver();
+        WebDriver driver = WebDriverUtil.getChromeDriver();
         driver.navigate().to("https://www.musinsa.com/brands?categoryCode=&type=&sortCode=BRAND_RANK&page=1&size=100");
         Document doc = Jsoup.parse(driver.getPageSource());
 
@@ -69,11 +69,13 @@ public class CrawlingService {
         // 서버 CPU에서 사용 가능한 processor 수를 가져와 threadPool의 크기로 한다.
         int cpuCore = Runtime.getRuntime().availableProcessors();
         logger.info("Cpu Core Count [{}] ", cpuCore);
+
         ExecutorService pool = Executors.newFixedThreadPool(cpuCore);
+        ThreadLocal<WebDriver> driverThreadLocal = ThreadLocal.withInitial(WebDriverUtil::getChromeDriver);
 
         // CPU Core 수에 맞춰 병렬 스레드 처리
         for (String urlPath : urlPaths) {
-            pool.execute(new getElementsOfBrandLink(urlPath));
+            pool.execute(new getElementsOfBrandLink(urlPath, driverThreadLocal));
         }
 
         // 병렬 작업 처리 완료 후 셧다운. isTerminated()로 thread 종료 후 실행되도록
@@ -83,15 +85,17 @@ public class CrawlingService {
         }
 
         logger.info("after executor link");
-        logger.info("total brandLink size : [{}] ", linkSet.size());
+        logger.info("total linkSet size : [{}] ", linkSet.size());
 
         // 브랜드 인덱스를 저장하기 위한 변수, 동기화 사용을 위해 synchronizedSet 사용
         brandList = Collections.synchronizedSet(new HashSet<>());
 
         // HashSet에 저장된 링크의 수 만큼 방문하여 브랜드의 이름, 브랜드 이미지를 가져온다.
         pool = Executors.newFixedThreadPool(cpuCore);
+        driverThreadLocal = ThreadLocal.withInitial(WebDriverUtil::getChromeDriver);
+
         // 병렬 작업 처리
-        for (String urlPath : linkSet) pool.execute(new getElementsOfBrandList(urlPath));
+        for (String urlPath : linkSet) pool.execute(new getElementsOfBrandList(urlPath, driverThreadLocal));
 
         // 완료 후 threadPool shutdown
         pool.shutdown();
@@ -133,10 +137,12 @@ public class CrawlingService {
     }
 
     // 브랜드 별 링크 가져오기
-    private record getElementsOfBrandLink(String urlPath) implements Runnable {
+    private record getElementsOfBrandLink(String urlPath, ThreadLocal<WebDriver> driverThreadLocal) implements Runnable {
 
         @Override
         public void run() {
+
+            WebDriver driver = driverThreadLocal.get();
 
             if (urlPath == null) {
                 logger.error("urlPath is null");
@@ -144,23 +150,13 @@ public class CrawlingService {
             }
 
             driver.navigate().to(urlPath);
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(1));
+            logger.info("parameter urlPath is [{}] ", urlPath);
+            logger.info("current driver move to [{}] ", driver.getCurrentUrl());
             Document urlDoc = Jsoup.parse(driver.getPageSource());
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                logger.error("Thread interrupted: {} ", e.getMessage());
-            }
 
             // dt 태그를 가져온 뒤
             Elements dtElements = urlDoc.select("dt");
-
-            // 태그 가져올 때 까지 thread 1초 대기
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                logger.error("Thread interrupted: {} ", e.getMessage());
-            }
 
             for (Element dt : dtElements) {
 
@@ -172,7 +168,7 @@ public class CrawlingService {
     }
 
     // 브랜드 링크 별 브랜드 이름, 브랜드 이미지 가져오기
-    private record getElementsOfBrandList(String urlPath) implements Runnable {
+    private record getElementsOfBrandList(String urlPath, ThreadLocal<WebDriver> driverThreadLocal) implements Runnable {
 
         @Override
         public void run() {
@@ -183,25 +179,15 @@ public class CrawlingService {
                 return;
             }
 
+            WebDriver driver = driverThreadLocal.get();
+
             driver.navigate().to(urlPath);
 
             Document urlDoc = Jsoup.parse(driver.getPageSource());
 
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                logger.error("Thread interrupted: {} ", e.getMessage());
-            }
-
             // img 태그 중 brand_logo brandLogo 클래스 명으로 가져온다.
             Element element = urlDoc.selectFirst(".brand_logo.brandLogo img");
 
-            // 태그 가져올 때 까지 thread 1초 대기
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                logger.error("Thread interrupted: {} ", e.getMessage());
-            }
             if (element != null) {
 
                 // alt 속성 값이 브랜드 이름이고
