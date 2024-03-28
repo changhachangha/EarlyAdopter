@@ -2,6 +2,7 @@ package com.earlyadopter.backend.service.api;
 
 import com.earlyadopter.backend.component.util.WebDriverUtil;
 import com.earlyadopter.backend.dto.document.product.BRAND_INDEX;
+import com.earlyadopter.backend.dto.document.product.MALL_INDEX;
 import com.earlyadopter.backend.repository.product.BrandIndexRepository;
 
 import java.io.*;
@@ -13,6 +14,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.earlyadopter.backend.repository.product.MallIndexRepository;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -29,13 +31,15 @@ import org.springframework.stereotype.Service;
 public class CrawlingService {
 
     private final BrandIndexRepository brandIndexRepository;
+    private final MallIndexRepository mallIndexRepository;
     private static final Logger logger = LoggerFactory.getLogger(CrawlingService.class);
     private static Set<String> linkSet;
     private static Set<BRAND_INDEX> brandList;
     private static Map<String, String> brandMapforDupCheckMap;
 
-    public CrawlingService(BrandIndexRepository brandIndexRepository) {
+    public CrawlingService(BrandIndexRepository brandIndexRepository, MallIndexRepository mallIndexRepository) {
         this.brandIndexRepository = brandIndexRepository;
+        this.mallIndexRepository = mallIndexRepository;
     }
 
     // 동기화 메서드. synchronized 사용
@@ -104,8 +108,18 @@ public class CrawlingService {
         }
 
         logger.info("brandListSize [{}] ", brandList.size());
+
+        // 쇼핑 몰에 브랜드 리스트 저장
+        MALL_INDEX mallIndex = mallIndexRepository.findByMallNm("무신사");
+
+        if (mallIndex.getBrandIndex() == null) mallIndex.setBrandIndex(new HashSet<>());
+
+        mallIndex.setBrandIndex(brandList);
+        mallIndexRepository.save(mallIndex);
+
         // brandList Elasticsearch 에 저장
         Iterable<BRAND_INDEX> brandIndexList = brandIndexRepository.saveAll(brandList);
+
 
         // 결과값 csv 파일로 저장
         String fileName = new Date().getTime() + " musinsa_brand_csv_output.csv";
@@ -200,6 +214,7 @@ public class CrawlingService {
                     BRAND_INDEX brandIndex = new BRAND_INDEX();
                     brandIndex.setBrandNm(brandNm);
                     brandIndex.setBrandLogo(imageUrl);
+                    brandIndex.setUrlPath(urlPath);
 
                     // Set에 저장
                     brandList.add(brandIndex);

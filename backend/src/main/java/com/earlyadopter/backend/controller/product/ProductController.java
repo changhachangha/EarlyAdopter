@@ -1,6 +1,8 @@
 package com.earlyadopter.backend.controller.product;
 
 import com.earlyadopter.backend.dto.document.product.BRAND_INDEX;
+import com.earlyadopter.backend.repository.product.BrandIndexRepository;
+import com.earlyadopter.backend.repository.product.MallIndexRepository;
 import com.earlyadopter.backend.service.api.CrawlingService;
 import com.earlyadopter.backend.service.product.ProductService;
 import org.slf4j.Logger;
@@ -16,10 +18,16 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final MallIndexRepository mallIndexRepository;
     private static final Logger logger = LoggerFactory.getLogger(CrawlingService.class);
+    private final BrandIndexRepository brandIndexRepository;
 
     @Autowired
-    public ProductController(ProductService productService) { this.productService = productService; }
+    public ProductController(ProductService productService, MallIndexRepository mallIndexRepository,
+                             BrandIndexRepository brandIndexRepository) { this.productService = productService;
+        this.mallIndexRepository = mallIndexRepository;
+        this.brandIndexRepository = brandIndexRepository;
+    }
 
     @GetMapping("/brand/pageNo")
     public int getBrandPageNo() {
@@ -42,7 +50,6 @@ public class ProductController {
     public ResponseEntity<Iterable<BRAND_INDEX>> findAllBrand() {
 
         logger.info("find all brand method start");
-
         return ResponseEntity.ok(productService.findAllBrand());
     }
 

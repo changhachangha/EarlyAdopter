@@ -19,8 +19,8 @@ public class CrawlingController {
         this.crawlingService = crawlingService;
     }
 
-    @PostMapping("/musinsa")
-    public ResponseEntity<BRAND_INDEX> musinsaCrawling() {
+    @PostMapping("/musinsaBrand")
+    public ResponseEntity<BRAND_INDEX> musinsaBrandCrawling() {
 
         crawlingService.addNewCategories();
         return ResponseEntity.ok().build();
