@@ -1,7 +1,7 @@
 export default defineNuxtConfig({
   ssr: true,
   devtools: { enabled: true },
-  css: [],
+  css: ['vuetify/styles'], //
   modules: [
     'vuetify-nuxt-module',
     [
