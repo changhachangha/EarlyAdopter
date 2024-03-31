@@ -3,7 +3,6 @@ package com.earlyadopter.backend.service.product;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchAllQuery;
 import com.earlyadopter.backend.dto.document.product.BRAND_INDEX;
 import com.earlyadopter.backend.repository.product.BrandIndexRepository;
-import com.earlyadopter.backend.service.api.CrawlingService;
 import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,7 @@ import java.util.List;
 @Service
 public class ProductService {
 
-    private static final Logger logger = LoggerFactory.getLogger(CrawlingService.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
     private final BrandIndexRepository brandIndexRepository;
     private final ElasticsearchOperations elasticsearchOperations;
 
@@ -36,6 +35,7 @@ public class ProductService {
         return (int) (totalIndex % 200 == 0 ? totalIndex / 200 : totalIndex / 200 + 1);
 
     }
+
     public Iterable<BRAND_INDEX> findAllBrandWithPageable(int pageNo) {
 
         logger.info("find all brand service method start");
@@ -69,6 +69,7 @@ public class ProductService {
     public Iterable<BRAND_INDEX> findAllBrand() {
         return brandIndexRepository.findAll();
     }
+
     public BRAND_INDEX findBrandByName(String name) {
 
         logger.info("find brand by name service method start");

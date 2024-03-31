@@ -34,7 +34,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-
 	// Spring -compileOnly
 	compileOnly 'org.projectlombok:lombok'
 
@@ -50,6 +49,9 @@ dependencies {
 	// Crawling
 	implementation 'org.jsoup:jsoup:1.15.3'
 	implementation 'org.seleniumhq.selenium:selenium-java:4.18.1'
+
+	// reflections
+	implementation 'org.reflections:reflections:0.9.12'
 
 }
 

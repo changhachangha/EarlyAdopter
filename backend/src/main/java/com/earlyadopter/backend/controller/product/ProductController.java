@@ -1,9 +1,6 @@
 package com.earlyadopter.backend.controller.product;
 
 import com.earlyadopter.backend.dto.document.product.BRAND_INDEX;
-import com.earlyadopter.backend.repository.product.BrandIndexRepository;
-import com.earlyadopter.backend.repository.product.MallIndexRepository;
-import com.earlyadopter.backend.service.api.CrawlingService;
 import com.earlyadopter.backend.service.product.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,15 +15,11 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-    private final MallIndexRepository mallIndexRepository;
-    private static final Logger logger = LoggerFactory.getLogger(CrawlingService.class);
-    private final BrandIndexRepository brandIndexRepository;
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
     @Autowired
-    public ProductController(ProductService productService, MallIndexRepository mallIndexRepository,
-                             BrandIndexRepository brandIndexRepository) { this.productService = productService;
-        this.mallIndexRepository = mallIndexRepository;
-        this.brandIndexRepository = brandIndexRepository;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
     @GetMapping("/brand/pageNo")
@@ -34,6 +27,7 @@ public class ProductController {
 
         return productService.totalPageNumberOfBrandIndex();
     }
+
     @GetMapping("/all/{pageNo}")
     public ResponseEntity<Iterable<BRAND_INDEX>> findAllBrandWithPageable(@PathVariable int pageNo) {
 
@@ -69,6 +63,7 @@ public class ProductController {
         }
 
     }
+
     @PostMapping()
     public ResponseEntity<Iterable<BRAND_INDEX>> insertBrand(@RequestBody List<BRAND_INDEX> brandIndex) {
 

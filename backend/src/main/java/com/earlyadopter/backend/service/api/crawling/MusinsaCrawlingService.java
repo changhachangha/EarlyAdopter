@@ -1,49 +1,42 @@
-package com.earlyadopter.backend.service.api;
+package com.earlyadopter.backend.service.api.crawling;
 
 import com.earlyadopter.backend.component.util.WebDriverUtil;
 import com.earlyadopter.backend.dto.document.product.BRAND_INDEX;
 import com.earlyadopter.backend.dto.document.product.MALL_INDEX;
 import com.earlyadopter.backend.repository.product.BrandIndexRepository;
-
-import java.io.*;
-
-import java.nio.charset.StandardCharsets;
-
-import java.time.Duration;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import com.earlyadopter.backend.repository.product.MallIndexRepository;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import org.openqa.selenium.WebDriver;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
-public class CrawlingService {
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+@Service
+public class MusinsaCrawlingService implements CrawlingBrandsInterface {
+
+    private static final Logger logger = LoggerFactory.getLogger(MusinsaCrawlingService.class);
     private final BrandIndexRepository brandIndexRepository;
     private final MallIndexRepository mallIndexRepository;
-    private static final Logger logger = LoggerFactory.getLogger(CrawlingService.class);
     private static Set<String> linkSet;
     private static Set<BRAND_INDEX> brandList;
     private static Map<String, String> brandMapforDupCheckMap;
 
-    public CrawlingService(BrandIndexRepository brandIndexRepository, MallIndexRepository mallIndexRepository) {
+    @Autowired
+    public MusinsaCrawlingService(BrandIndexRepository brandIndexRepository, MallIndexRepository mallIndexRepository) {
         this.brandIndexRepository = brandIndexRepository;
         this.mallIndexRepository = mallIndexRepository;
     }
 
-    // 동기화 메서드. synchronized 사용
-    public synchronized void addNewCategories() {
+    @Override
+    public synchronized void addNewBrands() {
 
         logger.info("addNewCategoriesService Start");
 
@@ -87,7 +80,6 @@ public class CrawlingService {
         while (true) {
             if (pool.isTerminated()) break;
         }
-
         logger.info("after executor link");
         logger.info("total linkSet size : [{}] ", linkSet.size());
 
@@ -118,110 +110,63 @@ public class CrawlingService {
         mallIndexRepository.save(mallIndex);
 
         // brandList Elasticsearch 에 저장
-        Iterable<BRAND_INDEX> brandIndexList = brandIndexRepository.saveAll(brandList);
+        brandIndexRepository.saveAll(brandList);
 
-
-        // 결과값 csv 파일로 저장
-        String fileName = new Date().getTime() + " musinsa_brand_csv_output.csv";
-
-        logger.info("CSV file output start, filename : " + fileName);
-        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), StandardCharsets.UTF_8))) {
-
-            for (BRAND_INDEX brandIndex : brandIndexList) {
-
-                writer.write("ID : ");
-                writer.write(brandIndex.getBrandId());
-                writer.write(", \t BrandNm : ");
-                writer.write(brandIndex.getBrandNm());
-                writer.write(", \t BrandLogoLink : ");
-                writer.write(brandIndex.getBrandLogo());
-
-                writer.newLine();
-            }
-
-        } catch (IOException e) {
-            logger.info("Exception occur [{}] ", e.getMessage());
-            throw new RuntimeException(e);
-        }
-
-        logger.info("CSV file output complete");
-        logger.info("addNewCategoriesService End");
         // 드라이버 인스턴스 종료
         driver.quit();
+
     }
 
-    // 브랜드 별 링크 가져오기
-    private record getElementsOfBrandLink(String urlPath, ThreadLocal<WebDriver> driverThreadLocal) implements Runnable {
+    private record getElementsOfBrandLink(String urlPath,
+                                          ThreadLocal<WebDriver> driverThreadLocal) implements Runnable {
 
         @Override
         public void run() {
 
-            WebDriver driver = driverThreadLocal.get();
+            ElementExtractor extractor = new ElementExtractor(urlPath, driverThreadLocal, "dt");
+            extractor.run();
 
-            if (urlPath == null) {
-                logger.error("urlPath is null");
-                return;
-            }
+            Elements elements = extractor.getElements();
 
-            driver.navigate().to(urlPath);
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(1));
-            Document urlDoc = Jsoup.parse(driver.getPageSource());
-
-            // dt 태그를 가져온 뒤
-            Elements dtElements = urlDoc.select("dt");
-
-            for (Element dt : dtElements) {
+            for (Element dt : elements) {
 
                 // a 태그에서 브랜드 별 상세 페이지 링크를 가져온다.
                 String link = Objects.requireNonNull(dt.selectFirst("a")).attr("href");
                 linkSet.add("https://www.musinsa.com" + link);
             }
         }
+
     }
 
-    // 브랜드 링크 별 브랜드 이름, 브랜드 이미지 가져오기
-    private record getElementsOfBrandList(String urlPath, ThreadLocal<WebDriver> driverThreadLocal) implements Runnable {
+    private record getElementsOfBrandList(String urlPath,
+                                          ThreadLocal<WebDriver> driverThreadLocal) implements Runnable {
 
         @Override
         public void run() {
 
-            // Document initialize
-            if (urlPath == null) {
-                logger.error("urlPath is null");
-                return;
-            }
+            ElementExtractor extractor = new ElementExtractor(urlPath, driverThreadLocal, ".brand_logo.brandLogo img");
+            extractor.run();
 
-            WebDriver driver = driverThreadLocal.get();
+            Elements elements = extractor.getElements();
 
-            driver.navigate().to(urlPath);
+            // alt 속성 값이 브랜드 이름이고
+            String brandNm = elements.attr("alt");
+            // src 속성 값이 브랜드 이미지 링크
+            String imageUrl = "https:" + elements.attr("src");
 
-            Document urlDoc = Jsoup.parse(driver.getPageSource());
+            // 기존 Repository 에서 brandNm과 브랜드 로고 링크가 일치하지 않을 경우에만 인덱스 객체 생성
+            if ((!brandMapforDupCheckMap.containsKey(brandNm) || !brandMapforDupCheckMap.get(brandNm).equals(imageUrl))) {
 
-            // img 태그 중 brand_logo brandLogo 클래스 명으로 가져온다.
-            Element element = urlDoc.selectFirst(".brand_logo.brandLogo img");
+                // 브랜드 인덱스 객체 생성 후
+                BRAND_INDEX brandIndex = new BRAND_INDEX();
+                brandIndex.setBrandNm(brandNm);
+                brandIndex.setBrandLogo(imageUrl);
+                brandIndex.setUrlPath(urlPath);
 
-            if (element != null) {
-
-                // alt 속성 값이 브랜드 이름이고
-                String brandNm = element.attr("alt");
-                // src 속성 값이 브랜드 이미지 링크
-                String imageUrl = "https:" + element.attr("src");
-
-                // 기존 Repository 에서 brandNm과 브랜드 로고 링크가 일치하지 않을 경우에만 인덱스 객체 생성
-                if ((!brandMapforDupCheckMap.containsKey(brandNm) || brandMapforDupCheckMap.get(brandNm).equals(imageUrl))) {
-
-                    // 브랜드 인덱스 객체 생성 후
-                    BRAND_INDEX brandIndex = new BRAND_INDEX();
-                    brandIndex.setBrandNm(brandNm);
-                    brandIndex.setBrandLogo(imageUrl);
-                    brandIndex.setUrlPath(urlPath);
-
-                    // Set에 저장
-                    brandList.add(brandIndex);
-                }
+                // Set에 저장
+                brandList.add(brandIndex);
             }
 
         }
     }
-
 }
