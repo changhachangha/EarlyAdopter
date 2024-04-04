@@ -13,7 +13,7 @@ import java.time.Duration;
 
 public interface CrawlingBrandsInterface {
 
-    Logger logger = LoggerFactory.getLogger(MusinsaCrawlingService.class);
+    Logger logger = LoggerFactory.getLogger(MusinsaBrandCrawlingService.class);
 
     void addNewBrands();
 

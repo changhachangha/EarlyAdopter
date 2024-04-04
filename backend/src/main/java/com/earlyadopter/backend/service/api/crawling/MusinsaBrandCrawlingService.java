@@ -20,9 +20,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service
-public class MusinsaCrawlingService implements CrawlingBrandsInterface {
+public class MusinsaBrandCrawlingService implements CrawlingBrandsInterface {
 
-    private static final Logger logger = LoggerFactory.getLogger(MusinsaCrawlingService.class);
+    private static final Logger logger = LoggerFactory.getLogger(MusinsaBrandCrawlingService.class);
     private final BrandIndexRepository brandIndexRepository;
     private final MallIndexRepository mallIndexRepository;
     private static Set<String> linkSet;
@@ -30,7 +30,7 @@ public class MusinsaCrawlingService implements CrawlingBrandsInterface {
     private static Map<String, String> brandMapforDupCheckMap;
 
     @Autowired
-    public MusinsaCrawlingService(BrandIndexRepository brandIndexRepository, MallIndexRepository mallIndexRepository) {
+    public MusinsaBrandCrawlingService(BrandIndexRepository brandIndexRepository, MallIndexRepository mallIndexRepository) {
         this.brandIndexRepository = brandIndexRepository;
         this.mallIndexRepository = mallIndexRepository;
     }
@@ -169,4 +169,14 @@ public class MusinsaCrawlingService implements CrawlingBrandsInterface {
 
         }
     }
+
+    /*
+        https://www.musinsa.com/brands/musinsastandard?category3DepthCodes=&category2DepthCodes=&category1DepthCode=&colorCodes=&startPrice=&endPrice=&exclusiveYn=&includeSoldOut=&saleGoods=&timeSale=&includeKeywords=&sortCode=NEW&tags=&page=11&size=90&listViewType=small&campaignCode=&outletGoods=&plusDelivery=
+        https://www.musinsa.com/brands/musinsastandard?category3DepthCodes=&category2DepthCodes=&category1DepthCode=&colorCodes=&startPrice=&endPrice=&exclusiveYn=&includeSoldOut=&saleGoods=&timeSale=&includeKeywords=&sortCode=NEW&tags=&page=12&size=90&listViewType=small&campaignCode=&outletGoods=&plusDelivery=
+        https://www.musinsa.com/brands/musinsastandard?category3DepthCodes=&category2DepthCodes=&category1DepthCode=&colorCodes=&startPrice=&endPrice=&exclusiveYn=&includeSoldOut=&saleGoods=&timeSale=&includeKeywords=&sortCode=NEW&tags=&page=59&size=90&listViewType=small&campaignCode=&outletGoods=&plusDelivery=
+
+        https://www.musinsa.com/brands/adidas?category3DepthCodes=&category2DepthCodes=&category1DepthCode=&colorCodes=&startPrice=&endPrice=&exclusiveYn=&includeSoldOut=&saleGoods=&timeSale=&includeKeywords=&sortCode=POPULAR_BRAND&tags=&page=1&size=90&listViewType=small&campaignCode=&outletGoods=&plusDelivery=
+        https://www.musinsa.com/brands/adidas?category3DepthCodes=&category2DepthCodes=&category1DepthCode=&colorCodes=&startPrice=&endPrice=&exclusiveYn=&includeSoldOut=&saleGoods=&timeSale=&includeKeywords=&sortCode=POPULAR_BRAND&tags=&page=11&size=90&listViewType=small&campaignCode=&outletGoods=&plusDelivery=
+
+     */
 }

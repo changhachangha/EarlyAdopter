@@ -2,7 +2,9 @@ package com.earlyadopter.backend.service.product;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchAllQuery;
 import com.earlyadopter.backend.dto.document.product.BRAND_INDEX;
+import com.earlyadopter.backend.dto.document.product.MD_INDEX;
 import com.earlyadopter.backend.repository.product.BrandIndexRepository;
+import com.earlyadopter.backend.repository.product.MdIndexRepository;
 import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +23,13 @@ public class ProductService {
     private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
     private final BrandIndexRepository brandIndexRepository;
     private final ElasticsearchOperations elasticsearchOperations;
+    private final MdIndexRepository mdIndexRepository;
 
-    public ProductService(BrandIndexRepository brandIndexRepository, ElasticsearchOperations elasticsearchOperations) {
+    public ProductService(BrandIndexRepository brandIndexRepository, ElasticsearchOperations elasticsearchOperations,
+                          MdIndexRepository mdIndexRepository) {
         this.brandIndexRepository = brandIndexRepository;
         this.elasticsearchOperations = elasticsearchOperations;
+        this.mdIndexRepository = mdIndexRepository;
     }
 
     public int totalPageNumberOfBrandIndex() {
@@ -99,4 +104,8 @@ public class ProductService {
     }
 
 
+    public Iterable<MD_INDEX> findAllMD() {
+        logger.info("find All MD service method start");
+        return mdIndexRepository.findAll();
+    }
 }

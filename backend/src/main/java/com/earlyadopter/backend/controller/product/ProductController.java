@@ -1,6 +1,7 @@
 package com.earlyadopter.backend.controller.product;
 
 import com.earlyadopter.backend.dto.document.product.BRAND_INDEX;
+import com.earlyadopter.backend.dto.document.product.MD_INDEX;
 import com.earlyadopter.backend.service.product.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +65,11 @@ public class ProductController {
 
     }
 
+    @GetMapping("/md/all")
+    public ResponseEntity<Iterable<MD_INDEX>> findAllMD() {
+        logger.info("find all brand method start");
+        return ResponseEntity.ok(productService.findAllMD());
+    }
     @PostMapping()
     public ResponseEntity<Iterable<BRAND_INDEX>> insertBrand(@RequestBody List<BRAND_INDEX> brandIndex) {
 
