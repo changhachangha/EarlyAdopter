@@ -1,23 +1,46 @@
 <template>
   <v-app id="inspire">
-    <v-app-bar :elevation="1" density="compact">
-      <v-app-bar-title width="30">EarlyAdopter</v-app-bar-title>
-      <v-spacer></v-spacer>
-
-      <v-btn icon="mdi-theme-light-dark" @click="toggleTheme"> </v-btn>
-    </v-app-bar>
-    <v-card class="mx-auto ma-10" color="grey-lighten-3" width="100%">
-      <v-card-text width="400">
+    <v-app-bar :elevation="1" density="prominent">
+      <div
+        style="
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        ">
+        <v-img
+          :style="{ margin: 'auto' }"
+          src="~/assets/images/undinaru.png"
+          width="140"></v-img>
+      </div style="
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        ">
+      <div style="width: 100%; height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 0px 5%;">
         <v-text-field
-          width="400"
-          append-inner-icon="mdi-magnify"
+          append-icon="mdi-magnify"
           density="compact"
-          label=""
-          variant="solo"
+          hint="검색어를 입력해주세요"
+          variant="underlined"
           hide-details
           single-line></v-text-field>
-      </v-card-text>
-    </v-card>
+      </div>
+      <div style="
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        ">
+        <v-btn icon="mdi-theme-light-dark" @click="toggleTheme"> </v-btn>
+      </div>
+    </v-app-bar>
+
     <v-main>
       <v-container>
         <v-row v-for="(item, n) in datas" :key="n">
@@ -28,6 +51,7 @@
                   :src="item.brandLogo"
                   aspect-ratio="1"
                   width="100"
+                  alt="상품이미지"
                   class="pa-20"></v-img>
 
                 <v-card-text>
@@ -108,7 +132,7 @@ function onClickSite(a) {
 #mainLayout {
   min-height: 10000px;
 }
-:deep(.v-toolbar) {
-  width: 60%;
+div::v-deep .v-app-bar{
+  padding: 0px 15%;
 }
 </style>
